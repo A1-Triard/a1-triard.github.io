@@ -23,7 +23,8 @@ jobs:
     - run: "git submodule update"
     - run: "./art/fonts/build"
     - run: "mkdir pages"
-    - run: "cp -f art/fonts/view.html pages/fonts.html"
+    - run: "cp index.html pages"
+    - run: "cp art/fonts/view.html pages/fonts.html"
     - uses: actions/upload-pages-artifact@v2
       with:
         path: pages
