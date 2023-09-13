@@ -22,3 +22,8 @@ jobs:
     - run: "git submodule init"
     - run: "git submodule update"
     - run: "./art/fonts/build"
+    - uses: actions/upload-artifact@v3
+      with:
+        name: fonts.html
+        path: art/fonts/view.html
+    - uses: actions/upload-pages-artifact@v2
