@@ -1,18 +1,21 @@
 name: Publish
 
 on:
+  workflow_dispatch:
   push:
     branches: [ master ]
-  pull_request:
-    branches: [ master ]
-  schedule:
-  - cron: '0 0 * * *'
 
-env:
-  CARGO_TERM_COLOR: always
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
-  main:
+  build:
     strategy:
       fail-fast: false
     runs-on: ubuntu-latest
@@ -25,7 +28,15 @@ jobs:
     - run: "mkdir pages"
     - run: "cp index.html pages"
     - run: "cp art/fonts/view.html pages/fonts.html"
-    - uses: peaceiris/actions-gh-pages@v3
+    - uses: actions/upload-pages-artifact@v2
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./pages
+        path: pages
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v2
